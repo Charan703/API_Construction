@@ -2,11 +2,27 @@ import React, { useState } from 'react';
 import ClientDashboard from '../Client/main';
 import HomeDashboard from '../Home/main';
 import WorkerDashboard from '../Worker/main';
+import LoginPage from './LoginPage';
 
 type DashboardType = 'client' | 'home' | 'worker';
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeDashboard, setActiveDashboard] = useState<DashboardType>('home');
+
+  const handleLogin = (role: string) => {
+    setIsLoggedIn(true);
+    setActiveDashboard(role as DashboardType);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setActiveDashboard('home');
+  };
+
+  if (!isLoggedIn) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   const renderDashboard = () => {
     switch (activeDashboard) {
@@ -53,6 +69,12 @@ export default function App() {
           }`}
         >
           Worker
+        </button>
+        <button
+          onClick={handleLogout}
+          className="px-4 py-2 rounded text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+        >
+          Logout
         </button>
       </div>
       {renderDashboard()}

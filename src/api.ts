@@ -1,6 +1,30 @@
 const API_BASE = 'http://localhost:8000/api';
 
 export const api = {
+  // Auth
+  login: (email: string, password: string) => fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  }).then(r => r.json()),
+  
+  signup: (data: any) => fetch(`${API_BASE}/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(r => r.json()),
+  
+  builderRequest: (data: any, files: any) => {
+    const formData = new FormData();
+    Object.keys(data).forEach(key => formData.append(key, data[key]));
+    if (files.id_proof) formData.append('id_proof', files.id_proof);
+    if (files.address_proof) formData.append('address_proof', files.address_proof);
+    if (files.certificate) formData.append('certificate', files.certificate);
+    return fetch(`${API_BASE}/auth/builder-request`, {
+      method: 'POST',
+      body: formData
+    }).then(r => r.json());
+  },
   // Projects
   getProjects: () => fetch(`${API_BASE}/projects`).then(r => r.json()),
   createProject: (data: any) => fetch(`${API_BASE}/projects`, {

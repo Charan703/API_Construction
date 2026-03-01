@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -67,6 +67,25 @@ class Event(BaseModel):
     event_type: str
     event_date: str
     event_time: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    first_name: str
+    last_name: str
+
+class BuilderRequest(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    phone: str
+    company: Optional[str] = None
+    experience: str
+    portfolio_url: Optional[str] = None
 
 # Projects endpoints
 @app.get("/api/projects")
@@ -311,6 +330,76 @@ def delete_event(event_id: int):
     conn.commit()
     conn.close()
     return {"message": "Event deleted"}
+
+# Authentication endpoints
+@app.post("/api/auth/login")
+def login(request: LoginRequest):
+    conn = get_db()
+    user = conn.execute("SELECT * FROM users WHERE email = ? AND password = ?", 
+                       (request.email, request.password)).fetchone()
+    conn.close()
+    if user:
+        return {"success": True, "role": user["role"], "user": dict(user)}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@app.post("/api/auth/signup")
+def signup(request: SignupRequest):
+    conn = get_db()
+    try:
+        conn.execute("""INSERT INTO users (email, password, role, first_name, last_name, created_at)
+            VALUES (?, ?, 'client', ?, ?, ?)""",
+            (request.email, request.password, request.first_name, request.last_name, 
+             datetime.now().isoformat()))
+        conn.commit()
+        user = conn.execute("SELECT * FROM users WHERE email = ?", (request.email,)).fetchone()
+        conn.close()
+        return {"success": True, "role": "client", "user": dict(user)}
+    except sqlite3.IntegrityError:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Email already exists")
+
+@app.post("/api/auth/builder-request")
+async def builder_request(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    phone: str = Form(...),
+    company: Optional[str] = Form(None),
+    experience: str = Form(...),
+    portfolio_url: Optional[str] = Form(None),
+    id_proof: Optional[UploadFile] = File(None),
+    address_proof: Optional[UploadFile] = File(None),
+    certificate: Optional[UploadFile] = File(None)
+):
+    conn = get_db()
+    try:
+        # Create user with pending status
+        password = f"temp_{int(datetime.now().timestamp())}"
+        conn.execute("""INSERT INTO users (email, password, role, first_name, last_name, phone, 
+            company, experience, portfolio_url, created_at)
+            VALUES (?, ?, 'worker', ?, ?, ?, ?, ?, ?, ?)""",
+            (email, password, first_name, last_name, phone, company, experience, 
+             portfolio_url, datetime.now().isoformat()))
+        
+        user_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+        
+        # Save documents
+        for doc_file, doc_type in [(id_proof, 'id_proof'), (address_proof, 'address_proof'), 
+                                     (certificate, 'certificate')]:
+            if doc_file and doc_file.filename:
+                file_path = UPLOAD_DIR / f"builder_{user_id}_{doc_type}_{doc_file.filename}"
+                with file_path.open("wb") as buffer:
+                    shutil.copyfileobj(doc_file.file, buffer)
+                conn.execute("""INSERT INTO builder_documents (user_id, doc_type, file_path, uploaded_at)
+                    VALUES (?, ?, ?, ?)""",
+                    (user_id, doc_type, str(file_path), datetime.now().isoformat()))
+        
+        conn.commit()
+        conn.close()
+        return {"success": True, "message": "Builder request submitted"}
+    except sqlite3.IntegrityError:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Email already exists")
 
 # Health check
 @app.get("/api/health")

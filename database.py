@@ -117,6 +117,31 @@ def init_db():
         FOREIGN KEY (project_id) REFERENCES projects(id)
     )''')
     
+    # Users table
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL,
+        first_name TEXT,
+        last_name TEXT,
+        phone TEXT,
+        company TEXT,
+        experience TEXT,
+        portfolio_url TEXT,
+        created_at TEXT
+    )''')
+    
+    # Builder documents table
+    c.execute('''CREATE TABLE IF NOT EXISTS builder_documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        doc_type TEXT,
+        file_path TEXT,
+        uploaded_at TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )''')
+    
     # Insert sample data
     c.execute("SELECT COUNT(*) FROM projects")
     if c.fetchone()[0] == 0:
