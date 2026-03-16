@@ -13,7 +13,6 @@ import {
   Mail,
   Zap
 } from 'lucide-react';
-import { motion } from 'motion/react';
 
 export function SettingsView() {
   const [activeSection, setActiveSection] = useState('general');

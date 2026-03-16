@@ -6,7 +6,6 @@ import {
   Calendar, 
   Settings,
   LogOut,
-  ChevronRight,
   ChevronDown,
   UserCircle,
   HardHat,
@@ -37,6 +36,7 @@ const mainMenuItems = [
   { id: 'support', label: 'Support', icon: MessageSquare },
   { id: 'verifications', label: 'Verifications', icon: ShieldCheck },
   { id: 'events', label: 'Events', icon: Calendar },
+  { id: 'create-account', label: 'Create Account', icon: UserCircle },
 ];
 
 const bottomMenuItems = [
@@ -58,7 +58,7 @@ export function Sidebar({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }
     const isExpanded = expandedMenus.includes(item.id);
     const hasChildren = item.children && item.children.length > 0;
     const isActive = !hasChildren && activeTab === item.id;
-    const isParentOfActive = hasChildren && item.children.some(child => activeTab === child.id);
+    const isParentOfActive = hasChildren && item.children.some((child: any) => activeTab === child.id);
     
     return (
       <div key={item.id} className="space-y-1">

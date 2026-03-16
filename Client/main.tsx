@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
-import { DashboardOverview } from './components/DashboardOverview';
+import { DashboardOverview } from './components/DashboardOverView';
 import { DocumentsView } from './components/DocumentView';
 import { ProfileView } from './components/ProfileView';
 import { SettingsView } from './components/SettingsView';
@@ -8,6 +8,7 @@ import { TeamView } from './components/TeamView';
 import { ResourcesView } from './components/ResourcesView';
 import { SupportServicesView } from './components/SupportServiceView';
 import { ConstructionSpecificView } from './components/ConstructionSpecificView';
+import { Model3DView } from './components/Model3DView';
 import { Bell, Search, HelpCircle } from 'lucide-react';
 
 export default function ConstructionDashboard({ 
@@ -20,6 +21,8 @@ export default function ConstructionDashboard({
     switch (activeTab) {
       case 'dashboard':
         return <DashboardOverview />;
+      case '3d-model':
+        return <Model3DView />;
       case 'documents':
         return <DocumentsView />;
       case 'profile':
@@ -94,5 +97,4 @@ export default function ConstructionDashboard({
     </div>
   );
 }
-
 

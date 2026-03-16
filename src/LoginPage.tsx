@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Mail, Lock, CheckCircle2, Users, Rocket, Award, Sparkles, Code, Shield, Zap, TrendingUp, Clock, DollarSign, Globe, Star, FileText, Upload, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api } from './api';
+import { api, DEMO_ACCOUNTS, isStaticDemoMode } from './api';
 import loginImage from './assets/5102555.png';
 
 export default function LoginPage({ onLogin }: { onLogin: (role: string) => void }) {
@@ -36,6 +36,7 @@ export default function LoginPage({ onLogin }: { onLogin: (role: string) => void
     address_proof: null,
     certificate: null
   });
+  const isDemoMode = isStaticDemoMode;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -86,7 +87,8 @@ export default function LoginPage({ onLogin }: { onLogin: (role: string) => void
         }
       }
     } catch (err: any) {
-      setError(err.detail || 'An error occurred');
+      console.error('Error:', err);
+      setError(err.message || 'Server connection failed. Please ensure the backend is running.');
     }
   };
 
@@ -236,6 +238,29 @@ export default function LoginPage({ onLogin }: { onLogin: (role: string) => void
           {error && (
             <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl">
               <p className="text-sm">{error}</p>
+            </div>
+          )}
+
+          {isDemoMode && activeTab === 'login' && (
+            <div className="mb-6 rounded-xl border border-blue-100 bg-blue-50/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">GitHub Pages Demo</p>
+              <p className="mt-2 text-sm text-slate-700">Use any demo account below to open the static site with local sample data.</p>
+              <div className="mt-3 grid gap-2">
+                {DEMO_ACCOUNTS.map((account) => (
+                  <button
+                    key={account.email}
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail(account.email);
+                      setLoginPassword(account.password);
+                    }}
+                    className="flex items-center justify-between rounded-lg border border-blue-100 bg-white px-3 py-2 text-left text-sm transition hover:border-blue-300 hover:bg-blue-50"
+                  >
+                    <span className="font-medium text-slate-800">{account.label}</span>
+                    <span className="text-xs text-slate-500">{account.email}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

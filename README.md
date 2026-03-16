@@ -1,6 +1,6 @@
 # First Construction - Management System
 
-A comprehensive construction management system with three dashboards: Admin, Client, and Worker views.
+A construction management application with three dashboards: Admin, Client, and Worker.
 
 ## Features
 
@@ -14,7 +14,7 @@ A comprehensive construction management system with three dashboards: Admin, Cli
 - Python 3.8+
 - npm or yarn
 
-## Setup Instructions
+## Local Setup
 
 ### 1. Install Frontend Dependencies
 
@@ -44,13 +44,34 @@ npm run build
 ```bash
 npm run dev
 ```
-This will start the Vite development server at http://localhost:5173
+This starts the Vite development server at `http://localhost:5173`.
 
-#### Production Mode (FastAPI Server)
+If the FastAPI server is unavailable, the frontend automatically falls back to local demo data so the UI still works.
+
+#### Full-Stack Mode (FastAPI Server)
 ```bash
 python server.py
 ```
-This will start the FastAPI server at http://localhost:8000
+This starts the FastAPI server at `http://localhost:8000`.
+
+## GitHub Pages
+
+GitHub Pages can only host the static frontend. It cannot run the FastAPI backend, SQLite database, or file uploads.
+
+This repo is configured so a GitHub Pages build runs in static demo mode:
+
+- The frontend uses local demo data stored in `localStorage`.
+- Login works with demo accounts shown on the login screen.
+- A GitHub Actions workflow builds and deploys `dist/` to Pages.
+
+To publish with GitHub Pages:
+
+1. Push the repository to GitHub.
+2. Open `Settings > Pages`.
+3. Set the source to `GitHub Actions`.
+4. Push to `main` or run the `Deploy GitHub Pages` workflow manually.
+
+If you later deploy the backend elsewhere, set `VITE_API_BASE_URL` to that API origin before building so the frontend talks to the live API instead of demo data.
 
 ## Project Structure
 
@@ -82,6 +103,7 @@ First Construction/
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
+- `npm run typecheck` - Run the TypeScript checker
 - `npm run preview` - Preview production build
 - `python server.py` - Run FastAPI server
 
@@ -92,9 +114,8 @@ The application includes a dashboard switcher in the top-right corner allowing y
 - **Client**: Client project view
 - **Worker**: Field worker interface
 
-## Notes
+## Repository Notes
 
-- All import errors have been fixed (motion/react → framer-motion)
-- Figma-specific imports have been removed
-- File naming issues resolved (main,tsx → main.tsx)
-- All dependencies are properly configured
+- `construction.db`, `uploads/`, and other runtime artifacts should stay out of GitHub commits.
+- The repo now ignores local runtime data, build output, and logs.
+- For Linux-based CI and GitHub Actions builds, import path casing is now enforced in `tsconfig.json`.

@@ -98,7 +98,10 @@ export function WorkerDashboard({ projects, onUpdateProgress, onAddPhoto }: Dash
           </div>
           
           <div className="grid grid-cols-1 gap-6">
-            {projects.map((project) => (
+            {projects.map((project) => {
+              const sitePhotos = project.sitePhotos ?? [];
+
+              return (
               <motion.div 
                 layout
                 key={project.id}
@@ -222,7 +225,7 @@ export function WorkerDashboard({ projects, onUpdateProgress, onAddPhoto }: Dash
                       </button>
                     </div>
 
-                    {project.sitePhotos.map((photo, i) => (
+                    {sitePhotos.map((photo, i) => (
                       <motion.div 
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -242,7 +245,7 @@ export function WorkerDashboard({ projects, onUpdateProgress, onAddPhoto }: Dash
                       </motion.div>
                     ))}
 
-                    {project.sitePhotos.length === 0 && !uploadingId && (
+                    {sitePhotos.length === 0 && !uploadingId && (
                       <div className="flex-1 flex items-center justify-center text-slate-300 italic text-xs border border-slate-100 rounded-xl px-4">
                         No photos uploaded for today's log yet.
                       </div>
@@ -250,7 +253,7 @@ export function WorkerDashboard({ projects, onUpdateProgress, onAddPhoto }: Dash
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )})}
           </div>
         </div>
 

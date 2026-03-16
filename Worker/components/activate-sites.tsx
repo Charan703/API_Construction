@@ -75,7 +75,7 @@ export function ActiveSitesPage({ projects }: ActiveSitesProps) {
                       </div>
                       <div>
                         <p className="text-[10px] text-slate-400 font-bold leading-none uppercase">Crew Size</p>
-                        <p className="text-sm font-black text-slate-900">{site.crewSize}</p>
+                        <p className="text-sm font-black text-slate-900">{site.crewSize ?? site.crew_size ?? 0}</p>
                       </div>
                    </div>
                 </div>
@@ -120,7 +120,7 @@ export function ActiveSitesPage({ projects }: ActiveSitesProps) {
                         </div>
                       ))}
                       <div className="w-8 h-8 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white">
-                        +{site.crewSize - 4}
+                        +{Math.max((site.crewSize ?? site.crew_size ?? 0) - 4, 0)}
                       </div>
                    </div>
                    <button className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1">

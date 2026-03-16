@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Sidebar } from './components/Sidebar';
+import { Sidebar } from './components/sidebar';
+import { CreateAccountView } from './components/CreateAccountView';
 import { 
   Bell, 
   Search, 
@@ -895,6 +896,7 @@ export default function DashboardPage({
       case 'support': return <SupportRequestsView />;
       case 'verifications': return <VerificationsView />;
       case 'events': return <EventsView />;
+      case 'create-account': return <CreateAccountView />;
       case 'settings': return <SettingsView />;
       default: return <DashboardView />;
     }
@@ -933,5 +935,4 @@ export default function DashboardPage({
     </div>
   );
 }
-
 

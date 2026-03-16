@@ -1,23 +1,16 @@
 #!/bin/bash
 
-echo "🚀 Starting First Construction Management System..."
-echo ""
-
-# Check if database exists
+echo "Checking database..."
 if [ ! -f "construction.db" ]; then
-    echo "📊 Initializing database..."
+    echo "Database not found. Initializing..."
     python database.py
 fi
 
-# Check if dist folder exists
-if [ ! -d "dist" ]; then
-    echo "🔨 Building frontend..."
-    npm run build
-fi
+echo "Testing database connection..."
+python -c "from database import get_db; conn = get_db(); print('✓ Database connected'); conn.close()" || exit 1
 
-echo ""
-echo "✅ Starting server at http://localhost:8000"
-echo "   Press Ctrl+C to stop"
-echo ""
+echo "Building frontend..."
+npm run build
 
+echo "Starting server..."
 python server.py

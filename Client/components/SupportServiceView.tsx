@@ -12,7 +12,6 @@ import {
   ClipboardList,
   MessageSquare
 } from 'lucide-react';
-import { motion } from 'motion/react';
 
 export function SupportServicesView() {
   const [activeTab, setActiveTab] = useState('verification');

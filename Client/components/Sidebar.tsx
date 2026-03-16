@@ -9,7 +9,8 @@ import {
   Truck, 
   Users,
   LogOut,
-  LifeBuoy
+  LifeBuoy,
+  Box
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -23,6 +24,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: '3d-model', label: '3D Model', icon: Box },
     { id: 'documents', label: 'Documents', icon: Files },
     { id: 'reports', label: 'Site Reports', icon: ClipboardList },
     { id: 'safety', label: 'Safety Logs', icon: HardHat },

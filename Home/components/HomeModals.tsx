@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
 import { api } from '../../src/api';
-import { AddProjectModal, AddBuilderModal } from '../../src/Modals';
 
 export function HomeButtons() {
   const [showProjectModal, setShowProjectModal] = useState(false);
